@@ -21,9 +21,13 @@ https://github.com/Homebrew/homebrew-core/issues/84737
 Philosophical discussions about The Right Way to port software, or the risks involved with running oudated versions of software, aside, I like PPSSPP to play games containing FMVs without randomly crashing. The following games crash to the point of being unplayable using the FreeBSD Ports or official packages version of PPSSPP, built against current ffmpeg (6.x branch), but are playable all the way through with ppsspp-1.17.1 when forced to use ffmpeg-3.0.2 instead of current ffmpeg 6.x:
 
 Persona
+
 Crisis Core Final Fantasy VII
+
 The Legend of Nayuta: Boundless Trails
+
 Ys Seven
+
 ...and many more!
 
 This was tested on amd64 FreeBSD 14.1, when built against the following versions of shared libs required by ffmpeg-3.0.2:
