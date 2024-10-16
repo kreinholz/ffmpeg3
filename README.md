@@ -46,4 +46,4 @@ It can be built directly from source utilizing the command `make install clean` 
 
 ffmpeg-3.0.2 does not conflict with either ffmpeg4 or ffmpeg installed from FreeBSD Ports or packages, as it installs all libraries, binaries, headers, and shared data in /usr/local/ffmpeg3.
 
-It's primary purpose is to serve as a dependency for PPSSPP, unbreaking compatibility with games containing FMVs after ~ 2016.
+Its primary purpose is to serve as a dependency for PPSSPP, unbreaking compatibility with games containing FMVs after ~ 2016.
