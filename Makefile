@@ -4,7 +4,7 @@ CATEGORIES=	multimedia audio net
 MASTER_SITES=	https://ffmpeg.org/releases/
 PKGNAMESUFFIX=	3
 
-MAINTAINER=	multimedia@FreeBSD.org
+MAINTAINER=	kreinholz@gmail.com
 COMMENT=	Realtime audio/video encoder/converter and streaming server (legacy 3.* series)
 WWW=		https://ffmpeg.org/
 

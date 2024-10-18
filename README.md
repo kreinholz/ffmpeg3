@@ -35,11 +35,6 @@ This was tested on amd64 FreeBSD 14.1, when built against the following versions
         libx264.so.164
         libvdpau.so.1
         libva.so.2
-        libgnutls.so.30
-        libgmp.so.10
-        libfreetype.so.6
-        libfontconfig.so.1
-        libass.so.9
         libX11.so.6
 
 It can be built directly from source utilizing the command `make install clean` or integrated into a synth or poudriere build with some creativity.
@@ -47,3 +42,5 @@ It can be built directly from source utilizing the command `make install clean` 
 ffmpeg-3.0.2 does not conflict with either ffmpeg4 or ffmpeg installed from FreeBSD Ports or packages, as it installs all libraries, binaries, headers, and shared data in /usr/local/ffmpeg3.
 
 Its primary purpose is to serve as a dependency for PPSSPP, unbreaking compatibility with games containing FMVs after ~ 2016.
+
+I highly recommend leaving the `make config` options alone, as I attempted to miinimize dependencies since only a small subset of ffmpeg's capabilities are actually needed to playing FMVs in PSP games.
