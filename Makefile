@@ -33,30 +33,17 @@ PREFIX=		${LOCALBASE}/${PKGBASE} # avoid conflict with the default
 .endif
 
 # Option CHROMAPRINT disabled, it cannot work and people are baffled.
-OPTIONS_DEFINE=	AMR_NB AMR_WB ASM ASS BS2B CACA CDIO \
-		DC1394 DEBUG DOCS FDK_AAC FLITE \
-		FONTCONFIG FREETYPE FREI0R FRIBIDI GME GSM ICONV ILBC \
-		KVAZAAR LADSPA LAME LIBBLURAY \
-		LTO MODPLUG NETWORK NVENC OPENAL OPENCL OPENGL \
-		OPENH264 OPENJPEG OPTIMIZED_CFLAGS OPUS \
-		PULSEAUDIO RTCPU RUBBERBAND SMB SNAPPY \
-		SOXR SPEEX SSH SVTHEVC SVTVP9 \
-		TESSERACT THEORA TWOLAME V4L VAAPI VDPAU VIDSTAB \
-		VO_AMRWBENC VORBIS VPX WEBP X264 X265 \
-		XCB XVID XVIDEO ZIMG ZMQ ZVBI
+OPTIONS_DEFINE=	ASM ICONV OPTIMIZED_CFLAGS RTCPU VAAPI X264
+
 # intel-media-sdk only for i386/amd64
 OPTIONS_DEFINE_amd64=	MFX
 OPTIONS_DEFINE_i386=	MFX
 
-OPTIONS_DEFAULT=	ASM FREI0R GMP ICONV OPTIMIZED_CFLAGS \
-			RTCPU VAAPI VDPAU X264
+OPTIONS_DEFAULT=	ASM OPTIMIZED_CFLAGS RTCPU VAAPI X264
 
 # i386 is too register-starved for LTO (PR257124)
 OPTIONS_EXCLUDE_i386=	LTO
 
-OPTIONS_RADIO=	RTMP SSL
-OPTIONS_RADIO_RTMP=	GCRYPT GMP
-OPTIONS_RADIO_SSL=	GNUTLS OPENSSL
 OPTIONS_GROUP=	LICENSE
 OPTIONS_GROUP_LICENSE=	GPL3 NONFREE
 
@@ -406,8 +393,7 @@ LICENSE_FILE_LGPL3+ =	${WRKSRC}/COPYING.LGPLv3
 
 NONFREE_CONFIGURE_ENABLE=nonfree
 
-INSTALL_TARGET=	install-progs install-doc install-data \
-		install-libs install-headers
+INSTALL_TARGET=	install-data install-libs install-headers
 
 DATADIR=	${PREFIX}/share/${PORTNAME}${PKGNAMESUFFIX}
 DOCSDIR=	${PREFIX}/share/doc/${PORTNAME}${PKGNAMESUFFIX}
@@ -427,9 +413,20 @@ CONFIGURE_ARGS+=--prefix="${PREFIX}" \
 		--enable-shared \
 		--enable-pic \
 		--enable-gpl \
-		--enable-avresample \
+		--disable-avresample \
 		--cc="${CC}" \
-		--cxx="${CXX}"
+		--cxx="${CXX}" \
+		--disable-avdevice \
+		--disable-filters \
+		--disable-programs \
+		--disable-network \
+		--disable-avfilter \
+		--disable-postproc \
+		--disable-doc \
+		--disable-ffplay \
+		--disable-ffprobe \
+		--disable-ffserver \
+		--disable-sdl
 
 DOC_FILES=	Changelog CREDITS INSTALL.md LICENSE.md MAINTAINERS \
 		README.md RELEASE_NOTES
