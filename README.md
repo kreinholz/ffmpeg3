@@ -34,6 +34,7 @@ This was tested on amd64 FreeBSD 14.1, when built against the following versions
 
         libx264.so.164
         libva.so.2
+	libvdpau.so.1
 
 It can be built directly from source utilizing the command `make install clean` or integrated into a synth or poudriere build with some creativity.
 
@@ -44,3 +45,7 @@ Its primary purpose is to serve as a dependency for PPSSPP, unbreaking compatibi
 I highly recommend leaving the `make config` options alone, as I attempted to minimize dependencies since only a small subset of ffmpeg's capabilities are actually needed to playing FMVs in PSP games.
 
 As of the latest revision, I've stopped building the ffmpeg programs, opting instead to build only the minimum libraries and headers required by emulators/ppsspp. This is in part to discourage running outdated and potentially insecure binaries, and also to make it clear this is not intended as an alternative to either multimedia/ffmpeg4 or multimedia/ffmpeg. Its sole purpose is to build emulators/ppsspp in such a way that PSP game compatibility is not broken where in-game FMVs are concerned.
+
+I submitted a proposed new port to the FreeBSD Ports tree here:
+
+https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=282188
