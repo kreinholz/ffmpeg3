@@ -36,9 +36,7 @@ ffmpeg-3.0.2 does not conflict with either ffmpeg4 or ffmpeg installed from Free
 
 Its sole purpose is to serve as a dependency for PPSSPP, unbreaking compatibility with games containing FMVs after ~ 2016.
 
-I highly recommend leaving the `make config` options alone, as I attempted to minimize dependencies since only a small subset of ffmpeg's capabilities are actually needed to playing FMVs in PSP games.
-
-As of the latest revision, I've stopped building the ffmpeg programs, opting instead to build only the minimum libraries and headers required by emulators/ppsspp. This is in part to discourage running outdated and potentially insecure binaries, and also to make it clear this is not intended as an alternative to either multimedia/ffmpeg4 or multimedia/ffmpeg. Its sole purpose is to build emulators/ppsspp in such a way that PSP game compatibility is not broken where in-game FMVs are concerned.
+As of the latest revision, ffmpeg3 builds static libs, and enables only the minimum capabilities specified by the PPSSPP devs in their ppsspp-ffmpeg fork of ffmpeg3. Its sole purpose is to build emulators/ppsspp in such a way that PSP game compatibility is not broken where in-game FMVs are concerned.
 
 I submitted a proposed new port to the FreeBSD Ports tree here:
 

@@ -4,6 +4,9 @@ CATEGORIES=	multimedia audio net
 MASTER_SITES=	https://ffmpeg.org/releases/
 PKGNAMESUFFIX=	3
 
+PATCH_SITES=	https://github.com/hrydgard/ppsspp-ffmpeg/commit/
+PATCHFILES=	9c4f84d9d9ad147f4a44cff582829647a0c65420.patch:-p1
+
 MAINTAINER=	kreinholz@gmail.com
 COMMENT=	Realtime audio/video encoder/converter and streaming server (legacy 3.* series)
 WWW=		https://ffmpeg.org/
@@ -11,124 +14,113 @@ WWW=		https://ffmpeg.org/
 LICENSE=	GPLv2+ LGPL21+
 LICENSE_COMB=	multi
 
-BUILD_DEPENDS=	${BUILD_DEPENDS_${ARCH}}
-BUILD_DEPENDS_aarch64=	as:devel/binutils
-BUILD_DEPENDS_amd64=	nasm:devel/nasm
-BUILD_DEPENDS_armv6=	as:devel/binutils
-BUILD_DEPENDS_armv7=	as:devel/binutils
-BUILD_DEPENDS_i386=	nasm:devel/nasm
+ONLY_FOR_ARCHS=	aarch64 amd64
 
-HAS_CONFIGURE=	yes
-CONFIGURE_LOG=	ffbuild/config.log
-USES=		compiler:c11 cpe gmake localbase:ldflags perl5 \
-		pkgconfig shebangfix tar:xz
-USE_LDCONFIG=	yes
+USES=		compiler:c11 cpe gmake localbase:ldflags perl5 pkgconfig \
+		shebangfix tar:xz
 USE_PERL5=	build
 SHEBANG_FILES=	doc/texi2pod.pl
-NOPRECIOUSMAKEVARS=	yes # ARCH
+USE_LDCONFIG=	yes
 
 .ifdef PKGNAMESUFFIX
 PORTSCOUT=	limit:^3\.
 PREFIX=		${LOCALBASE}/${PKGBASE} # avoid conflict with the default
 .endif
 
-# Option CHROMAPRINT disabled, it cannot work and people are baffled.
-OPTIONS_DEFINE=	ASM OPTIMIZED_CFLAGS RTCPU VAAPI VDPAU X264
+HAS_CONFIGURE=	yes
+CONFIGURE_LOG=	ffbuild/config.log
 
-OPTIONS_DEFAULT=	OPTIMIZED_CFLAGS RTCPU
-
-OPTIONS_DEFAULT_amd64=	LTO
-
-# i386 is too register-starved for LTO (PR257124)
-OPTIONS_EXCLUDE_i386=	LTO
-
-RTCPU_DESC=	Detect CPU capabilities at runtime
-
-OPTIONS_SUB=	yes
-
-# asm support
-ASM_CONFIGURE_ENABLE=	asm
-
-# debugging
-DEBUG_CONFIGURE_ON=	--disable-stripping
-DEBUG_CONFIGURE_OFF=	--disable-debug
-
-# docs
-DOCS_BUILD_DEPENDS=	texi2html:textproc/texi2html
-DOCS_CONFIGURE_ENABLE=	htmlpages
-DOCS_BINARY_ALIAS=	makeinfo=${FALSE} # force texi2html
-
-# lto
-LTO_CONFIGURE_ENABLE=	lto
-
-# optimizations
-OPTIMIZED_CFLAGS_CONFIGURE_ENABLE=	optimizations
-
-# rtcpu
-RTCPU_CONFIGURE_ENABLE=	runtime-cpudetect
-
-# vaapi
-VAAPI_LIB_DEPENDS=	libva.so:multimedia/libva
-VAAPI_CONFIGURE_ENABLE=	vaapi
-
-# vdpau
-VDPAU_USES=		xorg
-VDPAU_USE=		XORG=x11
-VDPAU_LIB_DEPENDS=	libvdpau.so:multimedia/libvdpau
-VDPAU_CONFIGURE_ENABLE=	vdpau
-
-# x264
-X264_LIB_DEPENDS=	libx264.so:multimedia/libx264
-X264_CONFIGURE_ENABLE=	libx264
-
-INSTALL_TARGET=	install-data install-libs install-headers
-
-DATADIR=	${PREFIX}/share/${PORTNAME}${PKGNAMESUFFIX}
-DOCSDIR=	${PREFIX}/share/doc/${PORTNAME}${PKGNAMESUFFIX}
-MAKE_ENV+=	V=1
 LDFLAGS_aarch64=-Wl,-z,notext
-LDFLAGS_armv6=	-Wl,-z,notext
-LDFLAGS_armv7=	-Wl,-z,notext
-LDFLAGS_i386=	-Wl,-z,notext
-LDFLAGS+=	-Wl,--undefined-version
+
+INSTALL_TARGET=	install-libs install-headers
+
+NOPRECIOUSMAKEVARS=	yes
+MAKE_ENV+=	V=1
+
+.if defined(WITH_DEBUG)
+CONFIGURE_ARGS=	--disable-stripping
+.else
+CONFIGURE_ARGS=	--disable-debug
+.endif
 
 CONFIGURE_ARGS+=--prefix="${PREFIX}" \
-		--mandir="${PREFIX}/share/man" \
-		--datadir="${DATADIR}" \
-		--docdir="${DOCSDIR}" \
 		--pkgconfigdir="${PREFIX}/libdata/pkgconfig" \
-		--disable-static \
-		--disable-libcelt \
-		--enable-shared \
+		--enable-static \
+		--disable-shared \
 		--enable-pic \
+		--enable-zlib \
+		--disable-everything \
 		--enable-gpl \
-		--disable-avresample \
 		--cc="${CC}" \
 		--cxx="${CXX}" \
 		--disable-avdevice \
-		--disable-filters \
-		--disable-programs \
-		--disable-network \
-		--disable-avfilter \
-		--disable-postproc \
-		--disable-doc \
-		--disable-ffplay \
-		--disable-ffprobe \
-		--disable-ffserver \
-		--disable-sdl
+    		--disable-filters \
+    		--disable-programs \
+    		--disable-network \
+    		--disable-avfilter \
+    		--disable-postproc \
+    		--disable-encoders \
+    		--disable-doc \
+    		--disable-ffplay \
+    		--disable-ffprobe \
+    		--disable-ffserver \
+		--disable-ffmpeg \
+    		--enable-decoder=h264 \
+    		--enable-decoder=mpeg4 \
+    		--enable-decoder=h263 \
+    		--enable-decoder=h263p \
+    		--enable-decoder=mpeg2video \
+    		--enable-decoder=mjpeg \
+    		--enable-decoder=mjpegb \
+    		--enable-decoder=aac \
+    		--enable-decoder=aac_latm \
+    		--enable-decoder=atrac3 \
+    		--enable-decoder=atrac3p \
+    		--enable-decoder=mp3 \
+    		--enable-decoder=pcm_s16le \
+    		--enable-decoder=pcm_s8 \
+    		--enable-demuxer=h264 \
+    		--enable-demuxer=h263 \
+    		--enable-demuxer=m4v \
+    		--enable-demuxer=mpegps \
+    		--enable-demuxer=mpegvideo \
+    		--enable-demuxer=avi \
+    		--enable-demuxer=mp3 \
+    		--enable-demuxer=aac \
+    		--enable-demuxer=pmp \
+    		--enable-demuxer=oma \
+    		--enable-demuxer=pcm_s16le \
+    		--enable-demuxer=pcm_s8 \
+    		--enable-demuxer=wav \
+    		--enable-encoder=ffv1 \
+    		--enable-encoder=huffyuv \
+    		--enable-encoder=mpeg4 \
+    		--enable-encoder=pcm_s16le \
+    		--enable-muxer=avi \
+    		--enable-parser=h264 \
+    		--enable-parser=mpeg4video \
+    		--enable-parser=mpegvideo \
+    		--enable-parser=aac \
+    		--enable-parser=aac_latm \
+    		--enable-parser=mpegaudio \
+    		--enable-protocol=file \
+		--disable-sdl \
+		--disable-asm \
+		--disable-iconv \
+		--disable-vaapi \
+		--disable-hwaccels
 
-DOC_FILES=	Changelog CREDITS INSTALL.md LICENSE.md MAINTAINERS \
-		README.md RELEASE_NOTES
-# under doc subdirectory
-DOC_DOCFILES=	APIchanges *.txt
-PORTDOCS=	*
+OPTIONS_DEFINE=		LTO OPTIMIZED_CFLAGS RTCPU
+OPTIONS_DEFAULT=	LTO OPTIMIZED_CFLAGS
+OPTIONS_DEFAULT_amd64=	RTCPU
+OPTIONS_EXCLUDE_aarch64=RTCPU
 
-.include <bsd.port.options.mk>
+RTCPU_DESC=		Detect CPU capabilities at runtime
 
-post-install:
-	(cd ${WRKSRC} && ${COPYTREE_SHARE} \
-		"${DOC_FILES}" ${STAGEDIR}${DOCSDIR})
-	(cd ${WRKSRC}/doc && ${COPYTREE_SHARE} \
-		"${DOC_DOCFILES}" ${STAGEDIR}${DOCSDIR})
+LTO_CONFIGURE_ENABLE=	lto
+
+OPTIMIZED_CFLAGS_CONFIGURE_ENABLE=	optimizations
+
+RTCPU_CONFIGURE_ENABLE=	runtime-cpudetect
 
 .include <bsd.port.mk>
