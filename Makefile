@@ -14,7 +14,9 @@ WWW=		https://ffmpeg.org/
 LICENSE=	GPLv2+ LGPL21+
 LICENSE_COMB=	multi
 
-ONLY_FOR_ARCHS=	aarch64 amd64
+NOT_FOR_ARCHS=	mips mips64 powerpc powerpc64 powerpcspe
+NOT_FOR_ARCHS_REASON=	emulators/ppsspp only supports little-endian, see \
+		https://github.com/hrydgard/ppsspp/issues/8823
 
 USES=		compiler:c11 cpe gmake localbase:ldflags perl5 pkgconfig \
 		shebangfix tar:xz
